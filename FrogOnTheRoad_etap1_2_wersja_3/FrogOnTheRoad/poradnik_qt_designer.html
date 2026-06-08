@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Poradnik Qt Designer – Frog on the Road</title>
+<style>
+:root {
+  --bg:#0f1117; --surface:#1a1d27; --card:#1e2235; --border:#2a2f4a;
+  --green:#4caf50; --blue:#42a5f5; --yellow:#ffca28; --red:#ef5350;
+  --purple:#ce93d8; --orange:#ffa726; --text:#e2e8f0; --muted:#7a849a;
+  --code-bg:#0d1017;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.75}
+
+nav{position:sticky;top:0;z-index:100;background:#0c0e18f0;backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;gap:6px;height:52px;flex-wrap:wrap}
+.logo{font-size:18px;font-weight:800;color:var(--green);margin-right:12px;white-space:nowrap}
+nav a{color:var(--muted);text-decoration:none;font-size:12.5px;padding:5px 10px;border-radius:5px;transition:.15s}
+nav a:hover{background:#ffffff0f;color:var(--text)}
+
+.wrap{display:flex;max-width:1160px;margin:0 auto}
+aside{width:230px;flex-shrink:0;position:sticky;top:52px;height:calc(100vh - 52px);
+  overflow-y:auto;padding:24px 12px;border-right:1px solid var(--border)}
+.toc-title{font-size:10.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:8px;padding-left:8px}
+aside a{display:block;padding:5px 10px;border-radius:5px;color:var(--muted);text-decoration:none;font-size:12.5px;transition:.12s}
+aside a:hover{background:#ffffff0a;color:var(--text)}
+aside a.sub{padding-left:20px;font-size:12px}
+aside a.active{background:#4caf5015;color:var(--green)}
+aside hr{border:none;border-top:1px solid var(--border);margin:10px 0}
+
+main{flex:1;padding:36px 44px;min-width:0}
+
+h1{font-size:30px;font-weight:800;color:var(--green);margin-bottom:8px}
+h1 small{font-size:15px;font-weight:400;color:var(--muted);display:block;margin-top:4px}
+h2{font-size:20px;font-weight:700;color:var(--blue);margin:48px 0 14px;padding-bottom:8px;
+  border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sn{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;
+  border-radius:50%;background:#42a5f520;color:var(--blue);font-size:13px;font-weight:700;flex-shrink:0}
+h3{font-size:15px;font-weight:600;color:var(--yellow);margin:26px 0 10px}
+
+p{margin-bottom:12px}
+ul,ol{padding-left:22px;margin-bottom:14px}
+li{margin-bottom:5px}
+
+code{font-family:'JetBrains Mono','Fira Code',monospace;font-size:12.5px;
+  background:var(--code-bg);border:1px solid var(--border);border-radius:4px;
+  padding:1px 6px;color:var(--purple)}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
+  padding:18px 22px;margin:14px 0 22px;overflow-x:auto;position:relative}
+pre code{background:none;border:none;padding:0;color:#cdd6f4;font-size:13px;line-height:1.7}
+.lang{position:absolute;top:7px;right:11px;font-size:10px;color:var(--muted);font-family:monospace;text-transform:uppercase}
+
+.kw{color:#89b4fa}.str{color:#a6e3a1}.cmt{color:#505a72;font-style:italic}
+.fn{color:#cba6f7}.num{color:#fab387}.cls{color:#f9e2af}.pp{color:#ff7b7b}
+.hi{background:#ffca2822;border-radius:3px;padding:0 2px}  /* highlight */
+
+.box{border-radius:10px;padding:14px 18px;margin:18px 0;display:flex;gap:12px;align-items:flex-start}
+.box .ic{font-size:18px;flex-shrink:0;margin-top:3px}
+.box p{margin:0}
+.box.info{background:#42a5f510;border:1px solid #42a5f528}
+.box.warn{background:#ffca2810;border:1px solid #ffca2828}
+.box.ok  {background:#4caf5010;border:1px solid #4caf5028}
+.box.err {background:#ef535010;border:1px solid #ef535028}
+
+.steps{counter-reset:s;list-style:none;padding:0;margin:14px 0}
+.steps li{counter-increment:s;display:flex;gap:14px;margin-bottom:18px;align-items:flex-start}
+.steps li::before{content:counter(s);min-width:26px;height:26px;border-radius:50%;
+  background:var(--green);color:#000;font-weight:700;font-size:12px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px}
+
+.tree{background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:20px 24px;margin:16px 0;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:2}
+.tree .nd{color:var(--blue)}.tree .ng{color:var(--green)}.tree .nr{color:var(--red)}
+.tree .ny{color:var(--yellow)}.tree .dm{color:var(--muted)}
+
+table{width:100%;border-collapse:collapse;margin:14px 0 20px;font-size:13.5px}
+th{background:var(--card);color:var(--blue);padding:9px 13px;text-align:left;
+  border-bottom:2px solid var(--border);font-weight:600}
+td{padding:8px 13px;border-bottom:1px solid var(--border)}
+tr:hover td{background:#ffffff04}
+
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600}
+.bg{background:#4caf5020;color:var(--green);border:1px solid #4caf5038}
+.bb{background:#42a5f520;color:var(--blue);border:1px solid #42a5f538}
+.by{background:#ffca2820;color:var(--yellow);border:1px solid #ffca2838}
+.br{background:#ef535020;color:var(--red);border:1px solid #ef535038}
+
+footer{margin-top:70px;padding:28px 44px;border-top:1px solid var(--border);
+  color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="logo">🐸 Frog on the Road</span>
+  <a href="#intro">Wstęp</a>
+  <a href="#struktura">Struktura plików</a>
+  <a href="#designer-menu">Designer – Menu</a>
+  <a href="#designer-window">Designer – GameWindow</a>
+  <a href="#podlaczenie">Podłączenie C++</a>
+  <a href="#cmake">CMake</a>
+  <a href="#checklist">Checklist</a>
+</nav>
+
+<div class="wrap">
+<aside>
+  <div class="toc-title">Spis treści</div>
+  <a href="#intro">Wstęp</a>
+  <a href="#jak-dziala">Jak to działa</a>
+  <a href="#struktura">Struktura plików</a>
+  <hr>
+  <a href="#designer-menu">Designer – menuscreen.ui</a>
+  <a href="#menu-tree" class="sub">Drzewo widgetów</a>
+  <a href="#menu-names" class="sub">objectName – ważne!</a>
+  <a href="#menu-style" class="sub">Style CSS</a>
+  <hr>
+  <a href="#designer-window">Designer – gamewindow.ui</a>
+  <a href="#window-tree" class="sub">Drzewo widgetów</a>
+  <a href="#window-graphicsview" class="sub">QGraphicsView</a>
+  <hr>
+  <a href="#podlaczenie">Podłączenie C++</a>
+  <a href="#krok-menuscreen" class="sub">menuscreen.h + .cpp</a>
+  <a href="#krok-gamewindow" class="sub">gamewindow.h + .cpp</a>
+  <hr>
+  <a href="#cmake">CMake – odkomentowania</a>
+  <a href="#checklist">Checklist</a>
+  <a href="#bledy">Częste błędy</a>
+</aside>
+
+<main>
+
+<!-- ═══ INTRO ═══ -->
+<section id="intro">
+<h1>Qt Designer → C++ – poradnik do projektu
+  <small>Frog on the Road · Etap 1 → 2</small>
+</h1>
+
+<p>
+  Kod projektu jest już w pełni przygotowany na Qt Designer.
+  Klasy <code>MenuScreen</code> i <code>GameWindow</code> mają dwa tryby pracy:
+</p>
+
+<table>
+  <tr><th>Tryb</th><th>Kiedy</th><th>Co robi</th></tr>
+  <tr>
+    <td><span class="badge bg">AKTUALNY</span> Fallback</td>
+    <td>Brak pliku <code>.ui</code></td>
+    <td>Buduje UI kodem C++ – aplikacja działa od razu</td>
+  </tr>
+  <tr>
+    <td><span class="badge bb">CEL</span> Designer</td>
+    <td>Po stworzeniu pliku <code>.ui</code></td>
+    <td>UI pochodzi z Designer – tylko trzy odkomentowania w kodzie</td>
+  </tr>
+</table>
+
+<div class="box ok">
+  <span class="ic">✅</span>
+  <p>Aplikacja kompiluje się i działa <strong>teraz</strong>, bez żadnych plików <code>.ui</code>.
+     Plik <code>.ui</code> dodajecie kiedy chcecie – wymaga to tylko odkomentowania kilku linii.</p>
+</div>
+</section>
+
+<!-- ═══ JAK DZIAŁA ═══ -->
+<section id="jak-dziala">
+<h2><span class="sn">1</span>Jak to działa – mechanizm AUTOUIC</h2>
+
+<p>
+  Gdy masz plik <code>ui/menuscreen.ui</code>, CMake automatycznie generuje
+  <code>ui_menuscreen.h</code> w katalogu buildu. Ten plik zawiera klasę
+  <code>Ui::MenuScreen</code> z metodą <code>setupUi()</code> tworzącą wszystkie widgety.
+</p>
+
+<pre><code><span class="cmt">// Co generuje AUTOUIC – nigdy nie edytujesz tego ręcznie</span>
+<span class="kw">namespace</span> <span class="cls">Ui</span> {
+  <span class="kw">class</span> <span class="cls">MenuScreen</span> {
+  <span class="kw">public</span>:
+    <span class="cls">QPushButton</span> *btnPlayer;   <span class="cmt">// ← objectName z Designer</span>
+    <span class="cls">QPushButton</span> *btnAI;
+    <span class="cls">QLabel</span>      *titleLabel;
+    <span class="kw">void</span> <span class="fn">setupUi</span>(<span class="cls">QWidget</span> *widget);  <span class="cmt">// buduje UI</span>
+  };
+}</code><span class="lang">wygenerowane</span></pre>
+
+<p>
+  Twoja klasa <code>MenuScreen</code> trzyma wskaźnik <code>Ui::MenuScreen *ui</code>
+  i w konstruktorze wywołuje <code>ui->setupUi(this)</code>.
+  Potem dostęp do przycisków przez <code>ui->btnPlayer</code>.
+</p>
+</section>
+
+<!-- ═══ STRUKTURA ═══ -->
+<section id="struktura">
+<h2><span class="sn">2</span>Docelowa struktura plików</h2>
+
+<div class="tree">
+<span class="nd">FrogOnTheRoad/</span><br>
+<span class="dm">├── CMakeLists.txt          </span><span class="dm">← odkomentuj 2 linie w sekcji UI_FILES</span><br>
+<span class="dm">├── include/</span><br>
+<span class="dm">│   ├── </span><span class="ng">menuscreen.h</span>    <span class="dm">← odkomentuj 2 linie (krok A)</span><br>
+<span class="dm">│   ├── </span><span class="ng">gamewindow.h</span>    <span class="dm">← odkomentuj 2 linie (krok B)</span><br>
+<span class="dm">│   └── ...</span><br>
+<span class="dm">├── src/</span><br>
+<span class="dm">│   ├── </span><span class="ng">menuscreen.cpp</span>  <span class="dm">← odkomentuj blok DESIGNER, usuń TYMCZASOWY (krok C)</span><br>
+<span class="dm">│   ├── </span><span class="ng">gamewindow.cpp</span>  <span class="dm">← odkomentuj blok DESIGNER, usuń TYMCZASOWY (krok D)</span><br>
+<span class="dm">│   └── ...</span><br>
+<span class="dm">├── </span><span class="nr">ui/</span>                     <span class="dm">← NOWY FOLDER – tworzysz go teraz</span><br>
+<span class="dm">│   ├── </span><span class="nr">menuscreen.ui</span>   <span class="dm">← tworzysz w Qt Designer</span><br>
+<span class="dm">│   └── </span><span class="nr">gamewindow.ui</span>   <span class="dm">← tworzysz w Qt Designer</span><br>
+<span class="dm">└── tests/</span>
+</div>
+</section>
+
+<!-- ═══ DESIGNER MENU ═══ -->
+<section id="designer-menu">
+<h2><span class="sn">3</span>Qt Designer – tworzenie menuscreen.ui</h2>
+
+<h3 id="menu-tree">Drzewo widgetów</h3>
+
+<div class="tree">
+<span class="nd">QWidget</span>  <span class="dm">objectName: </span><span class="ny">MenuScreen</span><br>
+<span class="dm">└── </span><span class="nd">verticalLayout</span>  <span class="dm">(QVBoxLayout, margins: 0, spacing: 20)</span><br>
+<span class="dm">    ├── </span><span class="nd">verticalSpacer</span>  <span class="dm">(QSpacerItem, Expanding)</span><br>
+<span class="dm">    ├── </span><span class="ng">titleLabel</span>  <span class="dm">(QLabel)</span><br>
+<span class="dm">    ├── </span><span class="nd">verticalSpacer_2</span>  <span class="dm">(QSpacerItem, Fixed 30px)</span><br>
+<span class="dm">    ├── </span><span class="ng">btnPlayer</span>  <span class="dm">(QPushButton, minimumSize: 260×55)</span><br>
+<span class="dm">    ├── </span><span class="ng">btnAI</span>  <span class="dm">(QPushButton, minimumSize: 260×55)</span><br>
+<span class="dm">    └── </span><span class="nd">verticalSpacer_3</span>  <span class="dm">(QSpacerItem, Expanding)</span>
+</div>
+
+<ol class="steps">
+  <li>W Qt Creator: <strong>File → New File → Qt → Qt Designer Form</strong>, wybierz szablon <strong>Widget</strong>, zapisz jako <code>ui/menuscreen.ui</code>.</li>
+  <li>Zaznacz cały widget (Ctrl+A) → kliknij prawym → <strong>Lay Out Vertically</strong> (lub Ctrl+L).</li>
+  <li>Z panelu Widget Box przeciągnij <strong>Vertical Spacer</strong> na górę layoutu.</li>
+  <li>Przeciągnij <strong>Label</strong> – nadaj mu <code>objectName: titleLabel</code>. Ustaw <code>alignment: AlignCenter</code>.</li>
+  <li>Przeciągnij drugi <strong>Vertical Spacer</strong>, w Properties ustaw <code>sizeType: Fixed</code>, <code>sizeHint height: 30</code>.</li>
+  <li>Przeciągnij <strong>Push Button</strong> – nadaj <code>objectName: btnPlayer</code>, tekst: <code>▶  Sterowanie gracza</code>. Ustaw <code>minimumSize: 260 × 55</code>.</li>
+  <li>Przeciągnij drugi <strong>Push Button</strong> – <code>objectName: btnAI</code>, tekst: <code>🤖  Trening AI</code>. Ustaw <code>minimumSize: 260 × 55</code>.</li>
+  <li>Przeciągnij ostatni <strong>Vertical Spacer</strong> na dół.</li>
+</ol>
+
+<h3 id="menu-names">objectName – krytyczne</h3>
+
+<div class="box err">
+  <span class="ic">🔴</span>
+  <p>Kod C++ odwołuje się do widgetów przez <code>ui->btnPlayer</code>, <code>ui->btnAI</code>, <code>ui->titleLabel</code>.
+     Jeśli objectName w Designer jest inny (np. <code>pushButton</code>), kompilator zgłosi błąd.
+     Zmień objectName zaznaczając widget → panel Properties → pole <strong>objectName</strong>.</p>
+</div>
+
+<table>
+  <tr><th>Widget</th><th>objectName (wymagany)</th><th>Typ</th></tr>
+  <tr><td>Tytuł gry</td><td><code>titleLabel</code></td><td>QLabel</td></tr>
+  <tr><td>Przycisk trybu gracza</td><td><code>btnPlayer</code></td><td>QPushButton</td></tr>
+  <tr><td>Przycisk trybu AI</td><td><code>btnAI</code></td><td>QPushButton</td></tr>
+</table>
+
+<h3 id="menu-style">Style CSS w Designer</h3>
+
+<p>Zaznacz widget → Properties → <strong>styleSheet</strong> → kliknij przycisk <code>...</code> → wpisz:</p>
+
+<p><strong>titleLabel:</strong></p>
+<pre><code>font-size: 32px;
+font-weight: bold;
+color: #4caf50;</code><span class="lang">stylesheet</span></pre>
+
+<p><strong>btnPlayer:</strong></p>
+<pre><code>QPushButton {
+    background: #4caf50;
+    color: white;
+    border-radius: 8px;
+    font-size: 16px;
+}
+QPushButton:hover {
+    background: #388e3c;
+}</code><span class="lang">stylesheet</span></pre>
+
+<p><strong>btnAI:</strong></p>
+<pre><code>QPushButton {
+    background: #1565c0;
+    color: white;
+    border-radius: 8px;
+    font-size: 16px;
+}
+QPushButton:hover {
+    background: #0d47a1;
+}</code><span class="lang">stylesheet</span></pre>
+
+<p><strong>Tło okna menu</strong> – zaznacz główny widget (QWidget) → styleSheet:</p>
+<pre><code>background-color: #0f1117;</code><span class="lang">stylesheet</span></pre>
+</section>
+
+<!-- ═══ DESIGNER WINDOW ═══ -->
+<section id="designer-window">
+<h2><span class="sn">4</span>Qt Designer – tworzenie gamewindow.ui</h2>
+
+<h3 id="window-tree">Drzewo widgetów</h3>
+
+<div class="tree">
+<span class="nd">QMainWindow</span>  <span class="dm">objectName: </span><span class="ny">GameWindow</span><br>
+<span class="dm">└── </span><span class="nd">centralwidget</span>  <span class="dm">(QWidget, automatycznie tworzony przez Qt)</span><br>
+<span class="dm">    └── </span><span class="nd">verticalLayout</span>  <span class="dm">(QVBoxLayout, margins: 0,0,0,0, spacing: 0)</span><br>
+<span class="dm">        ├── </span><span class="ng">scoreLabel</span>  <span class="dm">(QLabel, minimumHeight: 30, maximumHeight: 30)</span><br>
+<span class="dm">        └── </span><span class="ng">stackedWidget</span>  <span class="dm">(QStackedWidget)</span><br>
+<span class="dm">            ├── </span><span class="nd">page</span>  <span class="dm">(QWidget – strona 0, tu wstawimy MenuScreen z kodu)</span><br>
+<span class="dm">            └── </span><span class="nd">page_2</span>  <span class="dm">(QWidget – strona 1)</span><br>
+<span class="dm">                └── </span><span class="ng">gameView</span>  <span class="dm">(QGraphicsView, minimumSize: 800×640)</span>
+</div>
+
+<ol class="steps">
+  <li>Utwórz <strong>New File → Qt Designer Form</strong>, szablon <strong>Main Window</strong>, zapisz jako <code>ui/gamewindow.ui</code>.</li>
+  <li>Zaznacz <code>centralwidget</code> → Lay Out Vertically (Ctrl+L).</li>
+  <li>Ustaw marginesy layoutu na 0: Properties → <strong>layoutContentsMargins</strong> → wszystkie na 0. Spacing → 0.</li>
+  <li>Przeciągnij <strong>Label</strong> jako pierwszy element – <code>objectName: scoreLabel</code>. Tekst: <code>Wynik: 0   |   Rekord: 0</code>. Ustaw <code>minimumHeight: 30</code>, <code>maximumHeight: 30</code>, <code>alignment: AlignCenter</code>.</li>
+  <li>Przeciągnij <strong>Stacked Widget</strong> – <code>objectName: stackedWidget</code>. Powinien mieć dwie strony (page / page_2).</li>
+  <li>Przejdź na stronę 1 (page_2) klikając strzałkę na górze stacka. Lay Out Vertically.</li>
+  <li>Przeciągnij <strong>Graphics View</strong> na stronę page_2 – <code>objectName: gameView</code>. Ustaw <code>minimumSize: 800 × 640</code>.</li>
+  <li>Zaznacz QMainWindow → Properties → <strong>geometry</strong>: szerokość 800, wysokość 670.</li>
+</ol>
+
+<div class="box warn">
+  <span class="ic">⚠️</span>
+  <p>Strona 0 stacka (<code>page</code>) zostawiamy <strong>pustą</strong> w Designer.
+     <code>MenuScreen</code> jest wstawiany tam kodem w konstruktorze GameWindow:
+     <code>ui->stackedWidget->insertWidget(0, m_menu)</code>.
+     Nie próbuj wstawiać MenuScreen do Designer – to widget tworzony w C++.</p>
+</div>
+
+<h3>Style CSS dla gamewindow.ui</h3>
+
+<p><strong>scoreLabel:</strong></p>
+<pre><code>background: #1a1a2e;
+color: #4caf50;
+font-size: 14px;
+font-weight: bold;
+font-family: 'Courier New';</code><span class="lang">stylesheet</span></pre>
+
+<p><strong>QMainWindow (główny widget):</strong></p>
+<pre><code>background-color: #0f1117;</code><span class="lang">stylesheet</span></pre>
+
+<h3 id="window-graphicsview">QGraphicsView – ustawienia</h3>
+
+<p>Zaznacz <code>gameView</code> → Properties:</p>
+<ul>
+  <li><code>horizontalScrollBarPolicy</code> → <code>ScrollBarAlwaysOff</code></li>
+  <li><code>verticalScrollBarPolicy</code>   → <code>ScrollBarAlwaysOff</code></li>
+  <li><code>frameShape</code>                → <code>NoFrame</code></li>
+</ul>
+</section>
+
+<!-- ═══ PODŁĄCZENIE ═══ -->
+<section id="podlaczenie">
+<h2><span class="sn">5</span>Podłączenie do kodu C++ – dokładne instrukcje</h2>
+
+<div class="box info">
+  <span class="ic">ℹ️</span>
+  <p>Kod jest już przygotowany. Musisz tylko <strong>odkomentować</strong> zaznaczone linie i <strong>usunąć</strong> bloki oznaczone "TYMCZASOWY KOD". Poniżej masz dokładnie co i gdzie.</p>
+</div>
+
+<!-- MENUSCREEN.H -->
+<h3 id="krok-menuscreen">Krok A – include/menuscreen.h</h3>
+
+<p>Otwórz <code>include/menuscreen.h</code>. Znajdź i wykonaj dwie zmiany:</p>
+
+<p><strong>Zmiana 1</strong> – odkomentuj include (linia ~16):</p>
+<pre><code><span class="cmt">// PRZED:</span>
+<span class="cmt">// #include "ui_menuscreen.h"</span>
+
+<span class="cmt">// PO:</span>
+<span class="pp">#include</span> <span class="str">"ui_menuscreen.h"</span></code><span class="lang">menuscreen.h</span></pre>
+
+<p><strong>Zmiana 2</strong> – odkomentuj member i usuń fallback (linia ~40):</p>
+<pre><code><span class="cmt">// PRZED:</span>
+<span class="cmt">// Ui::MenuScreen *ui;</span>
+<span class="kw">void</span> <span class="fn">buildFallbackUI</span>();  <span class="cmt">// ← usuń tę linię</span>
+
+<span class="cmt">// PO:</span>
+<span class="cls">Ui::MenuScreen</span> *ui;</code><span class="lang">menuscreen.h</span></pre>
+
+<!-- MENUSCREEN.CPP -->
+<h3>Krok B – src/menuscreen.cpp</h3>
+
+<p>Otwórz <code>src/menuscreen.cpp</code>. Znajdź dwa bloki oznaczone komentarzami:</p>
+
+<pre><code><span class="cmt">// Krok 1: odkomentuj cały blok "=== DESIGNER ===" (usuń /* i */)</span>
+<span class="cmt">// Krok 2: usuń cały blok "=== TYMCZASOWY KOD ===" (od MenuScreen::MenuScreen do końca buildFallbackUI)</span></code><span class="lang">menuscreen.cpp</span></pre>
+
+<p>Po zmianach konstruktor powinien wyglądać tak:</p>
+<pre><code><span class="cls">MenuScreen</span>::<span class="fn">MenuScreen</span>(<span class="cls">AudioManager</span> *audio, <span class="cls">QWidget</span> *parent)
+    : <span class="cls">QWidget</span>(parent)
+    , <span class="hi">ui(new Ui::MenuScreen)</span>
+    , m_audio(audio)
+{
+    <span class="hi">ui-><span class="fn">setupUi</span>(<span class="kw">this</span>);</span>
+
+    <span class="fn">connect</span>(<span class="hi">ui->btnPlayer</span>, &amp;<span class="cls">QPushButton</span>::clicked,
+            <span class="kw">this</span>, &amp;<span class="cls">MenuScreen</span>::onPlayerModeClicked);
+    <span class="fn">connect</span>(<span class="hi">ui->btnAI</span>, &amp;<span class="cls">QPushButton</span>::clicked,
+            <span class="kw">this</span>, &amp;<span class="cls">MenuScreen</span>::onAIModeClicked);
+
+    <span class="kw">if</span> (m_audio) m_audio-><span class="fn">playMenuMusic</span>();
+}
+
+<span class="cls">MenuScreen</span>::~<span class="fn">MenuScreen</span>() { <span class="kw">delete</span> ui; }</code><span class="lang">menuscreen.cpp</span></pre>
+
+<!-- GAMEWINDOW.H -->
+<h3 id="krok-gamewindow">Krok C – include/gamewindow.h</h3>
+
+<p><strong>Zmiana 1</strong> – odkomentuj include (linia ~20):</p>
+<pre><code><span class="cmt">// PRZED:</span>
+<span class="cmt">// #include "ui_gamewindow.h"</span>
+
+<span class="cmt">// PO:</span>
+<span class="pp">#include</span> <span class="str">"ui_gamewindow.h"</span></code><span class="lang">gamewindow.h</span></pre>
+
+<p><strong>Zmiana 2</strong> – odkomentuj member i usuń tymczasowe wskaźniki (linia ~52):</p>
+<pre><code><span class="cmt">// PRZED:</span>
+<span class="cmt">// Ui::GameWindow *ui;</span>
+<span class="cls">QStackedWidget</span> *m_stack;        <span class="cmt">// ← usuń</span>
+<span class="cls">QLabel</span>         *m_scoreLabel;   <span class="cmt">// ← usuń</span>
+<span class="cls">QGraphicsView</span>  *m_gameView;     <span class="cmt">// ← usuń</span>
+
+<span class="cmt">// PO:</span>
+<span class="cls">Ui::GameWindow</span> *ui;</code><span class="lang">gamewindow.h</span></pre>
+
+<!-- GAMEWINDOW.CPP -->
+<h3>Krok D – src/gamewindow.cpp</h3>
+
+<p>Odkomentuj blok <code>=== DESIGNER ===</code> i usuń <code>=== TYMCZASOWY KOD ===</code>.
+Następnie w metodach <code>showMenu()</code>, <code>showGame()</code>, <code>onGameOver()</code>, <code>onScoreUpdated()</code>
+zamień trzy odwołania:</p>
+
+<pre><code><span class="cmt">// showMenu() i showGame():</span>
+m_stack->setCurrentIndex(...)    <span class="cmt">→</span>  ui->stackedWidget->setCurrentIndex(...)
+
+<span class="cmt">// onGameOver() i onScoreUpdated():</span>
+m_scoreLabel->setText(...)       <span class="cmt">→</span>  ui->scoreLabel->setText(...)</code><span class="lang">gamewindow.cpp</span></pre>
+</section>
+
+<!-- ═══ CMAKE ═══ -->
+<section id="cmake">
+<h2><span class="sn">6</span>CMake – dwie linie do odkomentowania</h2>
+
+<p>Otwórz <code>CMakeLists.txt</code>. Znajdź sekcję <code>UI_FILES</code> i odkomentuj obie linie:</p>
+
+<pre><code><span class="cmt"># PRZED:</span>
+<span class="kw">set</span>(UI_FILES
+    <span class="cmt"># ui/gamewindow.ui</span>
+    <span class="cmt"># ui/menuscreen.ui</span>
+)
+
+<span class="cmt"># PO:</span>
+<span class="kw">set</span>(UI_FILES
+    <span class="str">ui/gamewindow.ui</span>
+    <span class="str">ui/menuscreen.ui</span>
+)</code><span class="lang">CMakeLists.txt</span></pre>
+
+<p>Następnie w Qt Creator: <strong>Build → Run CMake</strong> (lub Ctrl+Shift+B).</p>
+
+<div class="box ok">
+  <span class="ic">✅</span>
+  <p>CMake ma już <code>CMAKE_AUTOUIC ON</code> i <code>CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_SOURCE_DIR}/ui</code> –
+     nie musisz nic więcej konfigurować. Po dodaniu pliku <code>.ui</code> do targetu CMake
+     automatycznie wygeneruje <code>ui_gamewindow.h</code> i <code>ui_menuscreen.h</code>.</p>
+</div>
+</section>
+
+<!-- ═══ CHECKLIST ═══ -->
+<section id="checklist">
+<h2><span class="sn">7</span>Checklist – kompletna lista kroków</h2>
+
+<table>
+  <tr><th>#</th><th>Co</th><th>Plik</th><th>Stan</th></tr>
+  <tr><td>1</td><td>Utwórz folder <code>ui/</code> w katalogu projektu</td><td>–</td><td><span class="badge by">TODO</span></td></tr>
+  <tr><td>2</td><td>Zaprojektuj <code>menuscreen.ui</code> (objectNames: btnPlayer, btnAI, titleLabel)</td><td><code>ui/menuscreen.ui</code></td><td><span class="badge by">TODO</span></td></tr>
+  <tr><td>3</td><td>Zaprojektuj <code>gamewindow.ui</code> (objectNames: scoreLabel, stackedWidget, gameView)</td><td><code>ui/gamewindow.ui</code></td><td><span class="badge by">TODO</span></td></tr>
+  <tr><td>4</td><td>Odkomentuj <code>#include "ui_menuscreen.h"</code> i <code>Ui::MenuScreen *ui</code></td><td><code>include/menuscreen.h</code></td><td><span class="badge by">TODO</span></td></tr>
+  <tr><td>5</td><td>Usuń <code>void buildFallbackUI()</code> z deklaracji</td><td><code>include/menuscreen.h</code></td><td><span class="badge by">TODO</span></td></tr>
+  <tr><td>6</td><td>Odkomentuj blok DESIGNER, usuń blok TYMCZASOWY</td><td><code>src/menuscreen.cpp</code></td><td><span class="badge by">TODO</span></td></tr>
+  <tr><td>7</td><td>Odkomentuj <code>#include "ui_gamewindow.h"</code> i <code>Ui::GameWindow *ui</code></td><td><code>include/gamewindow.h</code></td><td><span class="badge by">TODO</span></td></tr>
+  <tr><td>8</td><td>Usuń <code>m_stack</code>, <code>m_scoreLabel</code>, <code>m_gameView</code> z sekcji private</td><td><code>include/gamewindow.h</code></td><td><span class="badge by">TODO</span></td></tr>
+  <tr><td>9</td><td>Odkomentuj blok DESIGNER, usuń blok TYMCZASOWY</td><td><code>src/gamewindow.cpp</code></td><td><span class="badge by">TODO</span></td></tr>
+  <tr><td>10</td><td>Zamień <code>m_stack→</code> na <code>ui->stackedWidget→</code> w showMenu/showGame</td><td><code>src/gamewindow.cpp</code></td><td><span class="badge by">TODO</span></td></tr>
+  <tr><td>11</td><td>Zamień <code>m_scoreLabel→</code> na <code>ui->scoreLabel→</code> w onGameOver/onScoreUpdated</td><td><code>src/gamewindow.cpp</code></td><td><span class="badge by">TODO</span></td></tr>
+  <tr><td>12</td><td>Odkomentuj dwie linie w sekcji <code>UI_FILES</code></td><td><code>CMakeLists.txt</code></td><td><span class="badge by">TODO</span></td></tr>
+  <tr><td>13</td><td>Build → Run CMake → Ctrl+R</td><td>Qt Creator</td><td><span class="badge by">TODO</span></td></tr>
+</table>
+
+<!-- ═══ BŁĘDY ═══ -->
+<section id="bledy">
+<h3>Częste błędy i rozwiązania</h3>
+
+<table>
+  <tr><th>Błąd</th><th>Przyczyna</th><th>Rozwiązanie</th></tr>
+  <tr>
+    <td><code>'ui_menuscreen.h' file not found</code></td>
+    <td>Plik <code>.ui</code> nie jest w targecie CMake lub brak <code>AUTOUIC ON</code></td>
+    <td>Odkomentuj linie w <code>UI_FILES</code> w CMakeLists.txt → Run CMake</td>
+  </tr>
+  <tr>
+    <td><code>no member 'btnPlayer' in Ui::MenuScreen</code></td>
+    <td>objectName w Designer to np. <code>pushButton</code> zamiast <code>btnPlayer</code></td>
+    <td>W Designer zaznacz przycisk → Properties → objectName → wpisz <code>btnPlayer</code></td>
+  </tr>
+  <tr>
+    <td>Podwójne przyciski / pusty ekran</td>
+    <td>Zostawiono stary kod fallback razem z Designer</td>
+    <td>Upewnij się że blok TYMCZASOWY jest w całości usunięty</td>
+  </tr>
+  <tr>
+    <td><code>use of undeclared identifier 'ui'</code></td>
+    <td>Zapomniano odkomentować <code>Ui::MenuScreen *ui</code> w nagłówku</td>
+    <td>Krok A / C w checkliście</td>
+  </tr>
+  <tr>
+    <td>Okno ma zły rozmiar</td>
+    <td>Geometry w Designer ustawiona inaczej niż <code>setFixedSize()</code> w C++</td>
+    <td>Usuń <code>setFixedSize</code> z konstruktora – Designer steruje rozmiarem przez <code>setupUi()</code></td>
+  </tr>
+</table>
+</section>
+</section>
+
+</main>
+</div>
+
+<footer>
+  Poradnik projektu <strong>Frog on the Road</strong> &nbsp;|&nbsp;
+  Zsynchronizowany z kodem Etap 1 &nbsp;|&nbsp;
+  Qt 6.4+ · CMake 3.16+ · Qt Creator 10+
+</footer>
+</body>
+</html>
